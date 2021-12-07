@@ -4,6 +4,9 @@ import starwarsContext from './StarwarsContext';
 
 function StarwarsProvider({ children }) {
   const [data, setData] = useState([]);
+  const contextValue = {
+    data,
+  };
 
   useEffect(() => {
     async function fetchPlanets() {
@@ -13,10 +16,6 @@ function StarwarsProvider({ children }) {
     }
     fetchPlanets();
   }, []);
-
-  const contextValue = {
-    data,
-  };
 
   return (
     <starwarsContext.Provider value={ contextValue }>
