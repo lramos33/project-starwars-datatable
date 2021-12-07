@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import StarwarsContext from '../context/StarwarsContext';
 
 function Table() {
-  const { planets } = useContext(StarwarsContext);
+  const { data } = useContext(StarwarsContext);
   return (
     <table>
       <thead>
@@ -24,7 +24,7 @@ function Table() {
       </thead>
       <tbody>
         {
-          planets.map((planet) => (
+          data.map((planet) => (
             <tr key={ planet.name }>
               <td>{ planet.name }</td>
               <td>{ planet.rotation_period }</td>

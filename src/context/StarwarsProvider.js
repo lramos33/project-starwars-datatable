@@ -1,38 +1,28 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import starwarsContext from './StarwarsContext';
 
-class StarwarsProvider extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      planets: [],
-    };
+function StarwarsProvider({ children }) {
+  const [data, setData] = useState([]);
 
-    this.fetchPlanets = this.fetchPlanets.bind(this);
-  }
+  useEffect(() => {
+    async function fetchPlanets() {
+      await fetch('https://swapi-trybe.herokuapp.com/api/planets/')
+        .then((response) => response.json())
+        .then((response) => setData(response.results));
+    }
+    fetchPlanets();
+  }, []);
 
-  async fetchPlanets() {
-    await fetch('https://swapi-trybe.herokuapp.com/api/planets/')
-      .then((response) => response.json())
-      .then((response) => this.setState({
-        planets: response.results,
-      }));
-  }
+  const contextValue = {
+    data,
+  };
 
-  render() {
-    this.fetchPlanets();
-    const { children } = this.props;
-    const { planets } = this.state;
-    const contextValue = {
-      planets,
-    };
-    return (
-      <starwarsContext.Provider value={ contextValue }>
-        { children }
-      </starwarsContext.Provider>
-    );
-  }
+  return (
+    <starwarsContext.Provider value={ contextValue }>
+      { children }
+    </starwarsContext.Provider>
+  );
 }
 
 StarwarsProvider.propTypes = {
