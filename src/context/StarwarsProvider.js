@@ -3,18 +3,37 @@ import PropTypes from 'prop-types';
 import starwarsContext from './StarwarsContext';
 
 function StarwarsProvider({ children }) {
+  // Data states
   const [data, setData] = useState([]);
-  const [filterByName, setFilterByName] = useState({ name: '' });
   const [filteredData, setFilteredData] = useState(data);
-  const contextValue = {
-    data,
-    filterByName,
-    setFilterByName,
-    filteredData,
-    setFilteredData,
+  // Filter states
+  const [name, setName] = useState('');
+  const [column, setColumn] = useState('population');
+  const [operator, setOperator] = useState('greater_than');
+  const [number, setNumber] = useState(0);
+
+  // handleChange functions
+  const onPlanetNameInputChange = ({ target }) => {
+    const { value } = target;
+    setName(value);
   };
 
-  // Faz o fetch assim que o componente é montado
+  const onColumnInputChange = ({ target }) => {
+    const { value } = target;
+    setColumn(value);
+  };
+
+  const onOperatorInputChange = ({ target }) => {
+    const { value } = target;
+    setOperator(value);
+  };
+
+  const onNumberInputChange = ({ target }) => {
+    const { value } = target;
+    setNumber(value);
+  };
+
+  // Fetch data on componentDidMount
   useEffect(() => {
     async function fetchPlanets() {
       await fetch('https://swapi-trybe.herokuapp.com/api/planets/')
@@ -26,6 +45,30 @@ function StarwarsProvider({ children }) {
     }
     fetchPlanets();
   }, []);
+
+  // Filter planets by name
+  useEffect(() => {
+    setFilteredData(data.filter((planet) => planet.name.includes(name)));
+  }, [data, name, setFilteredData]);
+
+  const contextValue = {
+    data,
+    filteredData,
+    name,
+    column,
+    operator,
+    number,
+    // setData,
+    // setName,
+    // setColumn,
+    // setOperator,
+    // setNumber,
+    setFilteredData,
+    onPlanetNameInputChange,
+    onColumnInputChange,
+    onOperatorInputChange,
+    onNumberInputChange,
+  };
 
   return (
     <starwarsContext.Provider value={ contextValue }>

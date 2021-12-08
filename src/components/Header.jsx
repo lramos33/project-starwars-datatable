@@ -2,12 +2,7 @@ import React, { useContext } from 'react';
 import StarwarsContext from '../context/StarwarsContext';
 
 function Header() {
-  const { filterByName, setFilterByName } = useContext(StarwarsContext);
-
-  function handleChange({ target }) {
-    const { value } = target;
-    setFilterByName({ name: value });
-  }
+  const { name, onPlanetNameInputChange } = useContext(StarwarsContext);
 
   return (
     <div>
@@ -17,10 +12,10 @@ function Header() {
           className="input-text"
           data-testid="name-filter"
           type="text"
-          value={ filterByName.name }
+          value={ name }
           name="text"
           placeholder="Planet Name"
-          onChange={ handleChange }
+          onChange={ onPlanetNameInputChange }
         />
       </label>
     </div>
