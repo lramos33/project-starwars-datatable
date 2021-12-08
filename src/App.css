@@ -7,7 +7,6 @@
 .planets-table {
   border-collapse: collapse;
   width: 4000px;
-  /* text-align: center; */
 }
 
 .planets-table td, .planets-table th {
@@ -16,11 +15,11 @@
 }
 
 .planets-table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: center;
-  background-color: #04AA6D;
+  background-color: #04aa6d;
   color: white;
+  padding-bottom: 12px;
+  padding-top: 12px;
+  text-align: center;
 }
 
 .planets-table tr:nth-child( even ) {
