@@ -29,6 +29,11 @@ body {
   justify-content: space-between;
 }
 
+.filters-buttons-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .planets-table th {
   background-color: #04aa6d;
   color: white;
