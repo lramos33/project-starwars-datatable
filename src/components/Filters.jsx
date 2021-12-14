@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import StarwarsContext from '../context/StarwarsContext';
 
 function Filters() {
-  const { data, setFilteredData } = useContext(StarwarsContext);
+  const { filteredData, setFilteredData } = useContext(StarwarsContext);
   const [optionsColumnFilter, setOptionsColumnFilter] = useState([
     'population',
     'orbital_period',
@@ -61,13 +61,14 @@ function Filters() {
   const applyFilter = () => {
     const { column, comparison, value } = filterByNumericValues;
     if (comparison === 'maior que') {
-      setFilteredData(data.filter((planet) => planet[column] > +value));
+      setFilteredData(filteredData.filter((planet) => planet[column] > +value));
     } else if (comparison === 'menor que') {
-      setFilteredData(data.filter((planet) => planet[column] < +value));
+      setFilteredData(filteredData.filter((planet) => planet[column] < +value));
     } else {
-      setFilteredData(data.filter((planet) => planet[column] === value));
+      setFilteredData(filteredData.filter((planet) => planet[column] === value));
     }
     setOptionsColumnFilter(optionsColumnFilter.filter((option) => option !== column));
+    setColumnFilter(optionsColumnFilter[0]);
   };
 
   return (
