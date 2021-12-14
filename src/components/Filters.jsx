@@ -1,12 +1,21 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import StarwarsContext from '../context/StarwarsContext';
 
 function Filters() {
+  const { data, setFilteredData } = useContext(StarwarsContext);
+
   const [columnFilter, setColumnFilter] = useState('population');
-  const [operator, setOperator] = useState('greater_than');
+  const [operator, setOperator] = useState('maior que');
   const [number, setNumber] = useState(0);
   const [columnSort, setColumnSort] = useState('population');
+  console.log(columnSort);
   const [sortFilter, setSortFilter] = useState('ASC');
+  console.log(sortFilter);
+  const [filterByNumericValues, setFilterByNumericValues] = useState({
+    column: columnFilter,
+    comparison: operator,
+    value: number,
+  });
 
   // Start of Handle change functions
   const onColumnFilterInputChange = ({ target }) => {
@@ -35,6 +44,25 @@ function Filters() {
   };
   // End of Handle change functions
 
+  useEffect(() => {
+    setFilterByNumericValues({
+      column: columnFilter,
+      comparison: operator,
+      value: number,
+    });
+  }, [columnFilter, operator, number]);
+
+  const applyFilter = () => {
+    const { column, comparison, value } = filterByNumericValues;
+    if (comparison === 'maior que') {
+      setFilteredData(data.filter((planet) => (planet[column] > +value)));
+    } else if (comparison === 'menor que') {
+      setFilteredData(data.filter((planet) => (planet[column] < +value)));
+    } else {
+      setFilteredData(data.filter((planet) => (planet[column] === value)));
+    }
+  };
+
   return (
     <div className="filters-container">
 
@@ -62,9 +90,9 @@ function Filters() {
           data-testid="comparison-filter"
           onChange={ onOperatorInputChange }
         >
-          <option value="greater_than">maior que</option>
-          <option value="less_than">menor que</option>
-          <option value="equal_to">igual a</option>
+          <option value="maior que">maior que</option>
+          <option value="menor que">menor que</option>
+          <option value="igual a">igual a</option>
         </select>
       </label>
 
@@ -80,7 +108,7 @@ function Filters() {
         />
       </label>
 
-      <button type="button" data-testid="button-filter">
+      <button type="button" data-testid="button-filter" onClick={ applyFilter }>
         Filtrar
       </button>
 
