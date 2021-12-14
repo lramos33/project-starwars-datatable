@@ -3,7 +3,13 @@ import StarwarsContext from '../context/StarwarsContext';
 
 function Filters() {
   const { data, setFilteredData } = useContext(StarwarsContext);
-
+  const [optionsColumnFilter, setOptionsColumnFilter] = useState([
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
+  ]);
   const [columnFilter, setColumnFilter] = useState('population');
   const [operator, setOperator] = useState('maior que');
   const [number, setNumber] = useState(0);
@@ -55,12 +61,13 @@ function Filters() {
   const applyFilter = () => {
     const { column, comparison, value } = filterByNumericValues;
     if (comparison === 'maior que') {
-      setFilteredData(data.filter((planet) => (planet[column] > +value)));
+      setFilteredData(data.filter((planet) => planet[column] > +value));
     } else if (comparison === 'menor que') {
-      setFilteredData(data.filter((planet) => (planet[column] < +value)));
+      setFilteredData(data.filter((planet) => planet[column] < +value));
     } else {
-      setFilteredData(data.filter((planet) => (planet[column] === value)));
+      setFilteredData(data.filter((planet) => planet[column] === value));
     }
+    setOptionsColumnFilter(optionsColumnFilter.filter((option) => option !== column));
   };
 
   return (
@@ -69,25 +76,25 @@ function Filters() {
       <label htmlFor="column-filter">
         Column
         <select
+          data-testid="column-filter"
           id="column-filter"
           name="column-filter"
-          data-testid="column-filter"
           onChange={ onColumnFilterInputChange }
         >
-          <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          {
+            optionsColumnFilter.map((option, index) => (
+              <option key={ index } value={ option }>{ option }</option>
+            ))
+          }
         </select>
       </label>
 
       <label htmlFor="operator">
         Operator
         <select
+          data-testid="comparison-filter"
           id="operator"
           name="operator"
-          data-testid="comparison-filter"
           onChange={ onOperatorInputChange }
         >
           <option value="maior que">maior que</option>
@@ -99,12 +106,12 @@ function Filters() {
       <label htmlFor="number">
         Number
         <input
-          id="number"
-          type="number"
-          name="number"
-          value={ number }
           data-testid="value-filter"
+          id="number"
+          name="number"
           onChange={ onNumberInputChange }
+          type="number"
+          value={ number }
         />
       </label>
 
@@ -115,9 +122,9 @@ function Filters() {
       <label htmlFor="column-sort">
         Ordenar
         <select
+          data-testid="column-sort"
           id="colum-sort"
           name="column-sort"
-          data-testid="column-sort"
           onChange={ onColumnSortInputChange }
         >
           <option value="population">population</option>
@@ -130,24 +137,24 @@ function Filters() {
 
       <label htmlFor="asc">
         <input
-          type="radio"
-          id="asc"
-          value="ASC"
-          name="type-sort"
           data-testid="column-sort-input-asc"
+          id="asc"
+          name="type-sort"
           onChange={ onSortFilterInputChange }
+          type="radio"
+          value="ASC"
         />
         Ascendente
       </label>
 
       <label htmlFor="desc">
         <input
-          type="radio"
-          id="desc"
-          value="DESC"
-          name="type-sort"
           data-testid="column-sort-input-desc"
+          id="desc"
+          name="type-sort"
           onChange={ onSortFilterInputChange }
+          type="radio"
+          value="DESC"
         />
         Descendente
       </label>

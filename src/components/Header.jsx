@@ -22,11 +22,11 @@ function Header() {
         <input
           className="input-text"
           data-testid="name-filter"
+          name="text"
+          onChange={ onPlanetNameInputChange }
+          placeholder="Planet Name"
           type="text"
           value={ name }
-          name="text"
-          placeholder="Planet Name"
-          onChange={ onPlanetNameInputChange }
         />
       </label>
     </div>
