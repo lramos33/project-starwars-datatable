@@ -1,11 +1,22 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useContext, useEffect } from 'react';
 import StarwarsContext from '../context/StarwarsContext';
 
 function Filters() {
-  const { data, filteredData, setFilteredData } = useContext(StarwarsContext);
+  const {
+    data,
+    filteredData,
+    setFilteredData,
+    columnFilter,
+    setColumnFilter,
+    operator,
+    setOperator,
+    number,
+    setNumber,
+    filterByNumericValue,
+    setFilterByNumericValue,
+  } = useContext(StarwarsContext);
 
-  // Start of render states
   const [filterButtonsData, setFilterButtonsData] = useState([]);
   const [optionsColumnFilter, setOptionsColumnFilter] = useState([
     'population',
@@ -14,74 +25,52 @@ function Filters() {
     'rotation_period',
     'surface_water',
   ]);
-  // End of render states
-
-  // Start of filter states
-  const [columnFilter, setColumnFilter] = useState('population');
-  const [operator, setOperator] = useState('maior que');
-  const [number, setNumber] = useState(0);
-  const [columnSort, setColumnSort] = useState('population');
-  const [sortFilter, setSortFilter] = useState('ASC');
-  const [filterByNumericValues, setFilterByNumericValues] = useState([{
-    column: columnFilter,
-    comparison: operator,
-    value: number,
-  }]);
-  // End of filter states
-
-  // Start of Handle change functions
-  const onColumnFilterInputChange = ({ target: { value } }) => {
-    setColumnFilter(value);
-  };
-
-  const onOperatorInputChange = ({ target: { value } }) => {
-    setOperator(value);
-  };
-
-  const onNumberInputChange = ({ target: { value } }) => {
-    setNumber(value);
-  };
-
-  const onColumnSortInputChange = ({ target: { value } }) => {
-    setColumnSort(value);
-  };
-
-  const onSortFilterInputChange = ({ target: { value } }) => {
-    setSortFilter(value);
-  };
-  // End of Handle change functions
 
   useEffect(() => {
-    setFilterByNumericValues({
-      column: columnFilter,
-      comparison: operator,
-      value: number,
+    filterByNumericValue.forEach((filter) => {
+      if (filter.operator === 'maior que') {
+        setFilteredData(filteredData.filter(
+          (planet) => planet[filter.columnFilter] > +filter.number,
+        ));
+      } else if (filter.operator === 'menor que') {
+        setFilteredData(filteredData.filter(
+          (planet) => planet[filter.columnFilter] < +filter.number,
+        ));
+      } else {
+        setFilteredData(filteredData.filter(
+          (planet) => planet[filter.columnFilter] === filter.number,
+        ));
+      }
     });
-  }, [columnFilter, operator, number, optionsColumnFilter]);
+  }, [filterByNumericValue]);
 
-  const applyFilter = () => {
-    const { column, comparison, value } = filterByNumericValues;
-    if (comparison === 'maior que') {
-      setFilteredData(filteredData.filter((planet) => planet[column] > +value));
-    } else if (comparison === 'menor que') {
-      setFilteredData(filteredData.filter((planet) => planet[column] < +value));
-    } else {
-      setFilteredData(filteredData.filter((planet) => planet[column] === value));
-    }
-    setOptionsColumnFilter(optionsColumnFilter.filter((option) => option !== column));
+  const handleFilterClick = () => {
+    setOptionsColumnFilter(optionsColumnFilter.filter(
+      (option) => option !== columnFilter,
+    ));
     setColumnFilter(optionsColumnFilter[1]);
+    setFilterByNumericValue([...filterByNumericValue, {
+      columnFilter,
+      operator,
+      number,
+    }]);
     setFilterButtonsData([...filterButtonsData, {
-      column,
-      comparison,
-      value,
+      columnFilter,
+      operator,
+      number,
     }]);
   };
 
-  const deleteFilter = ({ target: { value } }) => {
-    setFilterButtonsData(filterButtonsData.filter((filter) => filter.column !== value));
+  const deleteFilterButton = ({ target: { value } }) => {
+    setFilteredData(data);
+    setFilterByNumericValue(filterByNumericValue.filter(
+      (filter) => filter.columnFilter !== value,
+    ));
+    setFilterButtonsData(filterButtonsData.filter(
+      (filter) => filter.columnFilter !== value,
+    ));
     optionsColumnFilter.push(value);
     setColumnFilter(optionsColumnFilter[0]);
-    setFilteredData(data);
   };
 
   return (
@@ -93,7 +82,7 @@ function Filters() {
             data-testid="column-filter"
             id="column-filter"
             name="column-filter"
-            onChange={ onColumnFilterInputChange }
+            onChange={ ({ target: { value } }) => setColumnFilter(value) }
           >
             {
               optionsColumnFilter.map((option, index) => (
@@ -109,7 +98,7 @@ function Filters() {
             data-testid="comparison-filter"
             id="operator"
             name="operator"
-            onChange={ onOperatorInputChange }
+            onChange={ ({ target: { value } }) => setOperator(value) }
           >
             <option value="maior que">maior que</option>
             <option value="menor que">menor que</option>
@@ -123,13 +112,18 @@ function Filters() {
             data-testid="value-filter"
             id="number"
             name="number"
-            onChange={ onNumberInputChange }
+            onChange={ ({ target: { value } }) => setNumber(value) }
             type="number"
             value={ number }
           />
         </label>
 
-        <button type="button" data-testid="button-filter" onClick={ applyFilter }>
+        <button
+          type="button"
+          data-testid="button-filter"
+          onClick={ handleFilterClick }
+          disabled={ optionsColumnFilter.length === 0 }
+        >
           Filtrar
         </button>
 
@@ -139,7 +133,7 @@ function Filters() {
             data-testid="column-sort"
             id="colum-sort"
             name="column-sort"
-            onChange={ onColumnSortInputChange }
+            // onChange={ onColumnSortInputChange }
           >
             <option value="population">population</option>
             <option value="orbital_period">orbital_period</option>
@@ -154,7 +148,7 @@ function Filters() {
             data-testid="column-sort-input-asc"
             id="asc"
             name="type-sort"
-            onChange={ onSortFilterInputChange }
+            // onChange={ onSortFilterInputChange }
             type="radio"
             value="ASC"
           />
@@ -166,7 +160,7 @@ function Filters() {
             data-testid="column-sort-input-desc"
             id="desc"
             name="type-sort"
-            onChange={ onSortFilterInputChange }
+            // onChange={ onSortFilterInputChange }
             type="radio"
             value="DESC"
           />
@@ -179,10 +173,17 @@ function Filters() {
       </div>
       <div className="filters-buttons-container">
         {
-          filterButtonsData.map((data, index) => (
+          filterButtonsData.map((button, index) => (
             <div key={ index }>
-              <span>{`${data.column} ${data.comparison} ${data.value}`}</span>
-              <button data-testid="filter" onClick={ deleteFilter } type="button" value={ data.column }>X</button>
+              <span>{`${button.columnFilter} ${button.operator} ${button.number}`}</span>
+              <button
+                data-testid="filter"
+                type="button"
+                value={ button.columnFilter }
+                onClick={ deleteFilterButton }
+              >
+                X
+              </button>
             </div>
           ))
         }
