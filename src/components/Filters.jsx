@@ -174,10 +174,9 @@ function Filters() {
       <div className="filters-buttons-container">
         {
           filterButtonsData.map((button, index) => (
-            <div key={ index }>
+            <div key={ index } data-testid="filter">
               <span>{`${button.columnFilter} ${button.operator} ${button.number}`}</span>
               <button
-                data-testid="filter"
                 type="button"
                 value={ button.columnFilter }
                 onClick={ deleteFilterButton }
