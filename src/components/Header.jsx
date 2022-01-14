@@ -5,7 +5,6 @@ function Header() {
   const { planets, setFilteredPlanets } = useContext(context);
   const [planetName, setPlanetName] = useState('');
 
-  // Toda vez que o planet name for alterado, o filtro é aplicado no array de planetas
   useEffect(() => {
     setFilteredPlanets(planets.filter((planet) => planet.name.includes(planetName)));
   }, [planetName]);

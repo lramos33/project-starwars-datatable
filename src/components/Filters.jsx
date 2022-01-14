@@ -1,13 +1,16 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable max-len */
-/* eslint-disable no-unused-vars */
 import React, { useState, useContext, useEffect } from 'react';
 import context from '../context/Context';
 
 function Filters() {
   const { planets, filteredPlanets, setFilteredPlanets } = useContext(context);
-  const [columnFilterData, setColumnFilterData] = useState(['population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water']);
   const [filtersByNumericValues, setFiltersByNumericValues] = useState([]);
+  const [columnFilterData, setColumnFilterData] = useState([
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
+  ]);
   const [currentFilter, setCurrentFilter] = useState({
     column: 'population',
     comparison: 'maior que',
@@ -18,7 +21,6 @@ function Filters() {
     setCurrentFilter({ ...currentFilter, [name]: value });
   };
 
-  // Remove a option selecionada do input e depois add o filtro atual no array de filtros
   const handleFilterClick = () => {
     const columnValue = document.getElementById('column').value;
     setColumnFilterData(columnFilterData.filter((option) => option !== columnValue));
@@ -27,25 +29,31 @@ function Filters() {
 
   const handleDeleteFilterClick = ({ target: { value } }) => {
     setFilteredPlanets(planets);
-    setFiltersByNumericValues(filtersByNumericValues.filter((filter) => filter.column !== value));
+    setFiltersByNumericValues(filtersByNumericValues.filter(
+      (filter) => filter.column !== value,
+    ));
     setColumnFilterData([...columnFilterData, value]);
   };
 
-  // Atualiza o estado do filtro atual quando a option é removida
   useEffect(() => {
     const columnValue = document.getElementById('column').value;
     setCurrentFilter({ ...currentFilter, column: columnValue });
   }, [columnFilterData]);
 
-  // Aplica todos os filtros
   useEffect(() => {
     filtersByNumericValues.forEach((filter) => {
       if (filter.comparison === 'maior que') {
-        setFilteredPlanets(filteredPlanets.filter((planet) => planet[filter.column] > +filter.value));
+        setFilteredPlanets(filteredPlanets.filter(
+          (planet) => planet[filter.column] > +filter.value,
+        ));
       } else if (filter.comparison === 'menor que') {
-        setFilteredPlanets(filteredPlanets.filter((planet) => planet[filter.column] < +filter.value));
+        setFilteredPlanets(filteredPlanets.filter(
+          (planet) => planet[filter.column] < +filter.value,
+        ));
       } else {
-        setFilteredPlanets(filteredPlanets.filter((planet) => planet[filter.column] === filter.value));
+        setFilteredPlanets(filteredPlanets.filter(
+          (planet) => planet[filter.column] === filter.value,
+        ));
       }
     });
   }, [filtersByNumericValues]);
