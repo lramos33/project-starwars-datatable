@@ -1,185 +1,117 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 import React, { useState, useContext, useEffect } from 'react';
-import StarwarsContext from '../context/StarwarsContext';
+import context from '../context/Context';
 
 function Filters() {
-  const {
-    data,
-    filteredData,
-    setFilteredData,
-    columnFilter,
-    setColumnFilter,
-    operator,
-    setOperator,
-    number,
-    setNumber,
-    filterByNumericValue,
-    setFilterByNumericValue,
-  } = useContext(StarwarsContext);
+  const { planets, filteredPlanets, setFilteredPlanets } = useContext(context);
+  const [columnFilterData, setColumnFilterData] = useState(['population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water']);
+  const [filtersByNumericValues, setFiltersByNumericValues] = useState([]);
+  const [currentFilter, setCurrentFilter] = useState({
+    column: 'population',
+    comparison: 'maior que',
+    value: '0',
+  });
 
-  const [filterButtonsData, setFilterButtonsData] = useState([]);
-  const [optionsColumnFilter, setOptionsColumnFilter] = useState([
-    'population',
-    'orbital_period',
-    'diameter',
-    'rotation_period',
-    'surface_water',
-  ]);
+  const handleChange = ({ target: { name, value } }) => {
+    setCurrentFilter({ ...currentFilter, [name]: value });
+  };
 
+  // Remove a option selecionada do input e depois add o filtro atual no array de filtros
+  const handleFilterClick = () => {
+    const columnValue = document.getElementById('column').value;
+    setColumnFilterData(columnFilterData.filter((option) => option !== columnValue));
+    setFiltersByNumericValues([...filtersByNumericValues, currentFilter]);
+  };
+
+  const handleDeleteFilterClick = ({ target: { value } }) => {
+    setFilteredPlanets(planets);
+    setFiltersByNumericValues(filtersByNumericValues.filter((filter) => filter.column !== value));
+    setColumnFilterData([...columnFilterData, value]);
+  };
+
+  // Atualiza o estado do filtro atual quando a option é removida
   useEffect(() => {
-    filterByNumericValue.forEach((filter) => {
-      if (filter.operator === 'maior que') {
-        setFilteredData(filteredData.filter(
-          (planet) => planet[filter.columnFilter] > +filter.number,
-        ));
-      } else if (filter.operator === 'menor que') {
-        setFilteredData(filteredData.filter(
-          (planet) => planet[filter.columnFilter] < +filter.number,
-        ));
+    const columnValue = document.getElementById('column').value;
+    setCurrentFilter({ ...currentFilter, column: columnValue });
+  }, [columnFilterData]);
+
+  // Aplica todos os filtros
+  useEffect(() => {
+    filtersByNumericValues.forEach((filter) => {
+      if (filter.comparison === 'maior que') {
+        setFilteredPlanets(filteredPlanets.filter((planet) => planet[filter.column] > +filter.value));
+      } else if (filter.comparison === 'menor que') {
+        setFilteredPlanets(filteredPlanets.filter((planet) => planet[filter.column] < +filter.value));
       } else {
-        setFilteredData(filteredData.filter(
-          (planet) => planet[filter.columnFilter] === filter.number,
-        ));
+        setFilteredPlanets(filteredPlanets.filter((planet) => planet[filter.column] === filter.value));
       }
     });
-  }, [filterByNumericValue]);
-
-  const handleFilterClick = () => {
-    setOptionsColumnFilter(optionsColumnFilter.filter(
-      (option) => option !== columnFilter,
-    ));
-    setColumnFilter(optionsColumnFilter[1]);
-    setFilterByNumericValue([...filterByNumericValue, {
-      columnFilter,
-      operator,
-      number,
-    }]);
-    setFilterButtonsData([...filterButtonsData, {
-      columnFilter,
-      operator,
-      number,
-    }]);
-  };
-
-  const deleteFilterButton = ({ target: { value } }) => {
-    setFilteredData(data);
-    setFilterByNumericValue(filterByNumericValue.filter(
-      (filter) => filter.columnFilter !== value,
-    ));
-    setFilterButtonsData(filterButtonsData.filter(
-      (filter) => filter.columnFilter !== value,
-    ));
-    optionsColumnFilter.push(value);
-    setColumnFilter(optionsColumnFilter[0]);
-  };
+  }, [filtersByNumericValues]);
 
   return (
     <div>
-      <div className="filters-container">
+      <div>
         <label htmlFor="column-filter">
           Column
           <select
             data-testid="column-filter"
-            id="column-filter"
-            name="column-filter"
-            onChange={ ({ target: { value } }) => setColumnFilter(value) }
+            id="column"
+            name="column"
+            onChange={ handleChange }
+            value={ currentFilter.column }
           >
             {
-              optionsColumnFilter.map((option, index) => (
-                <option key={ index } value={ option }>{ option }</option>
+              columnFilterData.map((option) => (
+                <option key={ option } value={ option }>{ option }</option>
               ))
             }
           </select>
         </label>
-
-        <label htmlFor="operator">
+        <label htmlFor="comparison">
           Operator
           <select
             data-testid="comparison-filter"
-            id="operator"
-            name="operator"
-            onChange={ ({ target: { value } }) => setOperator(value) }
+            id="comparison"
+            name="comparison"
+            onChange={ handleChange }
+            value={ currentFilter.comparison }
           >
             <option value="maior que">maior que</option>
             <option value="menor que">menor que</option>
             <option value="igual a">igual a</option>
           </select>
         </label>
-
-        <label htmlFor="number">
+        <label htmlFor="value">
           Number
           <input
-            data-testid="value-filter"
-            id="number"
-            name="number"
-            onChange={ ({ target: { value } }) => setNumber(value) }
             type="number"
-            value={ number }
+            data-testid="value-filter"
+            id="value"
+            name="value"
+            onChange={ handleChange }
+            value={ currentFilter.value }
           />
         </label>
-
         <button
           type="button"
           data-testid="button-filter"
           onClick={ handleFilterClick }
-          disabled={ optionsColumnFilter.length === 0 }
+          disabled={ columnFilterData.length === 0 }
         >
           Filtrar
         </button>
-
-        <label htmlFor="column-sort">
-          Ordenar
-          <select
-            data-testid="column-sort"
-            id="colum-sort"
-            name="column-sort"
-            // onChange={ onColumnSortInputChange }
-          >
-            <option value="population">population</option>
-            <option value="orbital_period">orbital_period</option>
-            <option value="diameter">diameter</option>
-            <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option>
-          </select>
-        </label>
-
-        <label htmlFor="asc">
-          <input
-            data-testid="column-sort-input-asc"
-            id="asc"
-            name="type-sort"
-            // onChange={ onSortFilterInputChange }
-            type="radio"
-            value="ASC"
-          />
-          Ascendente
-        </label>
-
-        <label htmlFor="desc">
-          <input
-            data-testid="column-sort-input-desc"
-            id="desc"
-            name="type-sort"
-            // onChange={ onSortFilterInputChange }
-            type="radio"
-            value="DESC"
-          />
-          Descendente
-        </label>
-
-        <button type="button" data-testid="column-sort-button">
-          Ordenar
-        </button>
       </div>
-      <div className="filters-buttons-container">
+      <div>
         {
-          filterButtonsData.map((button, index) => (
+          filtersByNumericValues.map((filter, index) => (
             <div key={ index } data-testid="filter">
-              <span>{`${button.columnFilter} ${button.operator} ${button.number}`}</span>
+              <p>{`${filter.column} ${filter.comparison} ${filter.value}`}</p>
               <button
                 type="button"
-                value={ button.columnFilter }
-                onClick={ deleteFilterButton }
+                onClick={ handleDeleteFilterClick }
+                value={ filter.column }
               >
                 X
               </button>

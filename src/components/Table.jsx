@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
-import StarwarsContext from '../context/StarwarsContext';
+import context from '../context/Context';
 
 function Table() {
-  const { filteredData } = useContext(StarwarsContext);
-
+  const { filteredPlanets } = useContext(context);
   return (
     <table className="planets-table">
       <thead>
@@ -25,9 +24,9 @@ function Table() {
       </thead>
       <tbody>
         {
-          filteredData.map((planet) => (
-            <tr className="table-line" key={ planet.name }>
-              <td data-testid="planet-name">{ planet.name }</td>
+          filteredPlanets.map((planet) => (
+            <tr key={ planet.name }>
+              <td>{ planet.name }</td>
               <td>{ planet.rotation_period }</td>
               <td>{ planet.orbital_period }</td>
               <td>{ planet.diameter }</td>

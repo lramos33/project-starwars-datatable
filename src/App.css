@@ -2,11 +2,6 @@ body {
   margin: 0;
 }
 
-/* Header */
-.title {
-  text-align: center;
-}
-
 /* Table */
 .planets-table {
   border-collapse: collapse;
@@ -16,36 +11,4 @@ body {
 .planets-table td, .planets-table th {
   border: 1px solid #ddd;
   padding: 10px;
-}
-
-.header {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-}
-
-.filters-container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.filters-buttons-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.planets-table th {
-  background-color: #04aa6d;
-  color: white;
-  padding-bottom: 12px;
-  padding-top: 12px;
-  text-align: center;
-}
-
-.planets-table tr:nth-child( even ) {
-  background-color: #f2f2f2;
-}
-
-.planets-table tr:hover {
-  background-color: #ddd;
 }
