@@ -10,7 +10,7 @@ function Header() {
   }, [planetName]);
 
   return (
-    <div>
+    <div className="header">
       <h1>Projeto Starwars</h1>
       <label htmlFor="text">
         <input

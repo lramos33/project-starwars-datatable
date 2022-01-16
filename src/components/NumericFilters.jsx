@@ -1,23 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react';
 import context from '../context/Context';
+import {
+  INITIAL_FILTER_STATE, OPERATOR_OPTIONS, COLUMN_OPTIONS } from '../services/constants';
 
-function Filters() {
+function NumericFilters() {
   const { planets, filteredPlanets, setFilteredPlanets } = useContext(context);
   const [filtersByNumericValues, setFiltersByNumericValues] = useState([]);
-  const [columnFilterData, setColumnFilterData] = useState([
-    'population',
-    'orbital_period',
-    'diameter',
-    'rotation_period',
-    'surface_water',
-  ]);
-  const [currentFilter, setCurrentFilter] = useState({
-    column: 'population',
-    comparison: 'maior que',
-    value: '0',
-  });
+  const [currentFilter, setCurrentFilter] = useState(INITIAL_FILTER_STATE);
+  const [columnFilterData, setColumnFilterData] = useState(COLUMN_OPTIONS);
 
-  const handleChange = ({ target: { name, value } }) => {
+  const handleNumericFilterChange = ({ target: { name, value } }) => {
     setCurrentFilter({ ...currentFilter, [name]: value });
   };
 
@@ -59,15 +51,16 @@ function Filters() {
   }, [filtersByNumericValues]);
 
   return (
-    <div>
-      <div>
+    <>
+      <div className="numeric-filters-container">
         <label htmlFor="column-filter">
-          Column
+          Column:
           <select
+            className="column-input"
             data-testid="column-filter"
             id="column"
             name="column"
-            onChange={ handleChange }
+            onChange={ handleNumericFilterChange }
             value={ currentFilter.column }
           >
             {
@@ -78,31 +71,36 @@ function Filters() {
           </select>
         </label>
         <label htmlFor="comparison">
-          Operator
+          Operator:
           <select
+            className="operator-input"
             data-testid="comparison-filter"
             id="comparison"
             name="comparison"
-            onChange={ handleChange }
+            onChange={ handleNumericFilterChange }
             value={ currentFilter.comparison }
           >
-            <option value="maior que">maior que</option>
-            <option value="menor que">menor que</option>
-            <option value="igual a">igual a</option>
+            {
+              OPERATOR_OPTIONS.map((option, index) => (
+                <option key={ index } value={ option }>{ option }</option>
+              ))
+            }
           </select>
         </label>
         <label htmlFor="value">
-          Number
+          Number:
           <input
+            className="number-input"
             type="number"
             data-testid="value-filter"
             id="value"
             name="value"
-            onChange={ handleChange }
+            onChange={ handleNumericFilterChange }
             value={ currentFilter.value }
           />
         </label>
         <button
+          className="filter-button"
           type="button"
           data-testid="button-filter"
           onClick={ handleFilterClick }
@@ -111,11 +109,13 @@ function Filters() {
           Filtrar
         </button>
       </div>
-      <div>
+      <div className="applied-filters-container">
         {
           filtersByNumericValues.map((filter, index) => (
             <div key={ index } data-testid="filter">
-              <p>{`${filter.column} ${filter.comparison} ${filter.value}`}</p>
+              <span className="applied-filter">
+                {`${filter.column} ${filter.comparison} ${filter.value}`}
+              </span>
               <button
                 type="button"
                 onClick={ handleDeleteFilterClick }
@@ -127,8 +127,8 @@ function Filters() {
           ))
         }
       </div>
-    </div>
+    </>
   );
 }
 
-export default Filters;
+export default NumericFilters;
