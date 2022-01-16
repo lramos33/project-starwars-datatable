@@ -2,7 +2,63 @@ body {
   margin: 0;
 }
 
-/* Table */
+.header {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+/* filters containers styles */
+.sort-filters-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.numeric-filters-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.applied-filters-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.applied-filter {
+  margin-right: 10px;
+}
+
+/* inputs styles */
+.order-input {
+  margin-left: 5px;
+}
+
+.order-button {
+  margin-left: 10px;
+}
+
+.column-input {
+  margin: 0 15px 0 5px;
+}
+
+.operator-input {
+  margin: 0 15px 0 5px;
+}
+
+.number-input {
+  margin-left: 5px;
+}
+
+.filter-button {
+  margin-left: 10px;
+}
+
+/* table style */
 .planets-table {
   border-collapse: collapse;
   width: 4000px;
@@ -11,4 +67,20 @@ body {
 .planets-table td, .planets-table th {
   border: 1px solid #ddd;
   padding: 10px;
+}
+
+.planets-table th {
+  background-color: #04aa6d;
+  color: white;
+  padding-bottom: 12px;
+  padding-top: 12px;
+  text-align: center;
+}
+
+.planets-table tr:nth-child( even ) {
+  background-color: #f2f2f2;
+}
+
+.planets-table tr:hover {
+  background-color: #ddd;
 }
