@@ -1,4 +1,4 @@
-<h1 align="center">Project Trybe Wallet</h1>
+<h1 align="center">Project Star Wars Datatable</h1>
 
 <p align="center">✅ Concluded</p>
 
