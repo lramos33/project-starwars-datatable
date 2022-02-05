@@ -52,7 +52,7 @@ Nesse projeto foi desenvolvido uma lista com filtros de planetas do universo de 
 
 - [x] 5. Apague o filtro de valores numéricos e desfaça as filtragens dos dados da tabela ao clicar no ícone de `X` de um dos filtros.
 
-#### Requisitos bônus:
+### Requisitos bônus:
 
 - [x] 6. Ordene as colunas de forma ascendente ou descendente.
 
